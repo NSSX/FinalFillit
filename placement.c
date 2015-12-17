@@ -194,24 +194,26 @@ char *malloc_chaine(char *chaine, int length)
 
 
 
-void ft_erase(char *chaine, char carac)
+char  *ft_erase(char *chaine, char carac)
 {
   int i;
 
   i = 0;
+  printf("carac del : %c  |", carac);
   while(chaine[i] != '\0')
     {
       if(chaine[i] == carac)
 	chaine[i] = '.';
       i++;
     }
+  return (chaine);
 }
 
 
 char *backtrack(int iprec, char *chaine, int tetri, char carac, int length, int chainei, char **tab)
 {
   int piecei;
-  printf("use | ");
+  
   piecei = first_di(tab[tetri]);    
   while(!try(ft_strdup(chaine), ft_strdup(tab[tetri]), chainei, piecei,length) && chaine[chainei] != '\0')
     {
@@ -222,28 +224,31 @@ char *backtrack(int iprec, char *chaine, int tetri, char carac, int length, int 
 	chaine = trans_di(chaine, carac);
 	tetri++;
 	carac++;
-	if(tetri  < 8)
+	if(tetri  < 4)
 	  {
-	  chaine = backtrack(chainei, chaine, tetri, carac,length,0, tab);      
+	    chaine = backtrack(chainei, chaine, tetri, carac,length,0, tab);      
 	  }
-	  }
+    }
     else
-      {/*
-	if(carac == 'A')
+      {
+	if(carac == 'A' && chaine[chainei] == '\0')
 	  {
-	    length++;
-	    chaine = malloc_chaine(chaine, length);
-	    }*/
-	chaine =  malloc_chaine(chaine, length++);
-	printf("%d", length);
-	printf("%s",chaine);
-	chaine = backtrack(0, chaine, 0, 'A',length,0, tab);
-	//ft_erase(chaine, carac--);
-	//tetri--;
-	//carac--;
-	//iprec++;
-	//backtrack(0, chaine, tetri, carac,length,iprec, tab);
-	}
+	    printf("augmente");
+	    chaine = malloc_chaine(chaine, length++);
+	    printf("%d", length);
+	    chaine = backtrack(0, chaine, 0, 'A',length,0, tab);
+	  }
+	else
+	  {
+	    tetri--;
+	    carac--;
+	    chaine = ft_erase(chaine, carac);
+	    printf("carac actuel : %c  |",carac);
+	    iprec++;
+	    chaine = backtrack(0, chaine, tetri, carac,length,iprec, tab);
+	  }
+
+	  }
   return (chaine);
 }
 
