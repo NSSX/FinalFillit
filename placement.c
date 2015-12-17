@@ -192,6 +192,47 @@ char *malloc_chaine(char *chaine, int length)
     return (chaine);
 }
 
+
+
+void ft_erase(char *chaine, char carac)
+{
+  int i;
+
+  i = 0;
+  while(chaine[i] != '\0')
+    {
+      if(chaine[i] == carac)
+	chaine[i] = '.';
+      i++;
+    }
+}
+
+
+int backtrack(int iprec, char *chaine, int tetri, char carac, int length, int chainei, char **tab)
+{
+  int piecei;
+
+
+  if(!tab[tetri])
+    return (0);
+  piecei = first_di(tab[tetri]);    
+  while(!try(ft_strdup(chaine), ft_strdup(tab[tetri]), chainei, piecei,length) && chaine[chainei] != '\0')
+    {
+      chainei++;
+    }
+    if(try(chaine, ft_strdup(tab[tetri]), chainei, piecei,length))
+    {
+	chaine = trans_di(chaine, carac);
+	backtrack(chainei, chaine, tetri++, carac++,length,0, tab);      
+    }
+  /*else
+    {
+      ft_erase(chaine, carac--);
+      backtrack(0, chaine, --tetri, --carac,length,iprec + 1, tab);
+      }*/
+  return (0);
+}
+
 void ft_all(char *piece)
 {
   int chainei;
@@ -208,15 +249,16 @@ void ft_all(char *piece)
   int i;
   int j;
   int index;
- 
+  int iprec;
   
-  
+
+  iprec = 0;
   tab = all_tetri(ft_strdup(piece));
   i = 0;
   j = 0;
   index = 0;
   carac = 'A';
-  length = (nb_tetri(piece));
+  length = 10;
   chaine = malloc_chaine(chaine, length);
   tetri = 0;
   reali = 0;
@@ -224,27 +266,7 @@ void ft_all(char *piece)
   zone_contact = 0;
   chainei = 0;
   length++;
-  while(tetri < nb_tetri(piece))
-    {
-        piecei = first_di(tab[tetri]);
-	while(chaine[chainei] != '\0')
-	{
-	  while((!try(ft_strdup(chaine), ft_strdup(tab[tetri]), chainei, piecei,length)) && chaine[chainei] != '\0')
-	    chainei++;
-	  if(stock_max(ft_strdup(chaine), ft_strdup(tab[tetri]), chainei, piecei, length) > max)
-	    {
-	      reali = chainei;
-	      max = stock_max(ft_strdup(chaine), ft_strdup(tab[tetri]), chainei, piecei, length);
-	    }
-	  chainei++;
-	}
-	try(chaine, tab[tetri], reali, piecei,length);
-	chaine = trans_di(chaine, carac);
-	carac = carac + 1;
-	max = -10;
-	chainei = 0;
-	tetri++;
-	}
+  backtrack(iprec, chaine, tetri, carac, length, chainei, tab);
   printf("\033[31m%s", chaine);
   printf("\n");
 
