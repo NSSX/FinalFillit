@@ -208,13 +208,10 @@ void ft_erase(char *chaine, char carac)
 }
 
 
-int backtrack(int iprec, char *chaine, int tetri, char carac, int length, int chainei, char **tab)
+char *backtrack(int iprec, char *chaine, int tetri, char carac, int length, int chainei, char **tab)
 {
   int piecei;
-
-
-  if(!tab[tetri])
-    return (0);
+  printf("use | ");
   piecei = first_di(tab[tetri]);    
   while(!try(ft_strdup(chaine), ft_strdup(tab[tetri]), chainei, piecei,length) && chaine[chainei] != '\0')
     {
@@ -223,14 +220,31 @@ int backtrack(int iprec, char *chaine, int tetri, char carac, int length, int ch
     if(try(chaine, ft_strdup(tab[tetri]), chainei, piecei,length))
     {
 	chaine = trans_di(chaine, carac);
-	backtrack(chainei, chaine, tetri++, carac++,length,0, tab);      
-    }
-  /*else
-    {
-      ft_erase(chaine, carac--);
-      backtrack(0, chaine, --tetri, --carac,length,iprec + 1, tab);
-      }*/
-  return (0);
+	tetri++;
+	carac++;
+	if(tetri  < 8)
+	  {
+	  chaine = backtrack(chainei, chaine, tetri, carac,length,0, tab);      
+	  }
+	  }
+    else
+      {/*
+	if(carac == 'A')
+	  {
+	    length++;
+	    chaine = malloc_chaine(chaine, length);
+	    }*/
+	chaine =  malloc_chaine(chaine, length++);
+	printf("%d", length);
+	printf("%s",chaine);
+	chaine = backtrack(0, chaine, 0, 'A',length,0, tab);
+	//ft_erase(chaine, carac--);
+	//tetri--;
+	//carac--;
+	//iprec++;
+	//backtrack(0, chaine, tetri, carac,length,iprec, tab);
+	}
+  return (chaine);
 }
 
 void ft_all(char *piece)
@@ -258,7 +272,7 @@ void ft_all(char *piece)
   j = 0;
   index = 0;
   carac = 'A';
-  length = 10;
+  length = 0;
   chaine = malloc_chaine(chaine, length);
   tetri = 0;
   reali = 0;
@@ -266,8 +280,9 @@ void ft_all(char *piece)
   zone_contact = 0;
   chainei = 0;
   length++;
-  backtrack(iprec, chaine, tetri, carac, length, chainei, tab);
-  printf("\033[31m%s", chaine);
+chaine = backtrack(iprec, chaine, tetri, carac, length, chainei, tab);
+  printf("\n");
+ printf("\033[31m%s", chaine);
   printf("\n");
 
 }
