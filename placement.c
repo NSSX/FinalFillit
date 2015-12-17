@@ -228,7 +228,7 @@ char *backtrack(int *iactuel, char *chaine, int tetri, char carac, int length, i
 	tetri++;
 	carac++;
 	iactuel[tetri] = chainei;
-	if(tetri  < 4)
+	if(tetri  < 8)
 	  {
 	    chaine = backtrack(iactuel, chaine, tetri, carac,length,0, tab);   
 	  }
@@ -254,7 +254,7 @@ char *backtrack(int *iactuel, char *chaine, int tetri, char carac, int length, i
 	    chaine = malloc_chaine(chaine, ++length);
 	    length++;
 	    printf("%d", length);
-	    chaine = backtrack(chainei, chaine, 0, 'A',length,0, tab);
+	    chaine = backtrack(iactuel,chaine, 0, 'A',length,0, tab);
 	    }
 
       }
@@ -286,7 +286,7 @@ void ft_all(char *piece)
   j = 0;
   index = 0;
   carac = 'A';
-  length = 4;
+  length = 0;
   chaine = malloc_chaine(chaine, length);
   tetri = 0;
   reali = 0;
