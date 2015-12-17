@@ -209,11 +209,14 @@ char  *ft_erase(char *chaine, char carac)
   return (chaine);
 }
 
-
-char *backtrack(int iprec, char *chaine, int tetri, char carac, int length, int chainei, char **tab)
+//indexactuel en tab dimension 
+char *backtrack(int *iactuel, char *chaine, int tetri, char carac, int length, int chainei, char **tab)
 {
   int piecei;
-  
+  int i;
+
+  i = 0;
+  printf("%s \n",chaine);
   piecei = first_di(tab[tetri]);    
   while(!try(ft_strdup(chaine), ft_strdup(tab[tetri]), chainei, piecei,length) && chaine[chainei] != '\0')
     {
@@ -224,32 +227,38 @@ char *backtrack(int iprec, char *chaine, int tetri, char carac, int length, int 
 	chaine = trans_di(chaine, carac);
 	tetri++;
 	carac++;
+	iactuel[tetri] = chainei;
 	if(tetri  < 4)
 	  {
-	    chaine = backtrack(chainei, chaine, tetri, carac,length,0, tab);      
+	    chaine = backtrack(iactuel, chaine, tetri, carac,length,0, tab);   
 	  }
     }
     else
       {
-	if(carac == 'A' && chaine[chainei] == '\0')
-	  {
-	    printf("augmente");
-	    chaine = malloc_chaine(chaine, length++);
-	    printf("%d", length);
-	    chaine = backtrack(0, chaine, 0, 'A',length,0, tab);
-	  }
+	if(carac != 'A')
+	 {
+	    carac--;
+	    tetri--;
+	    iactuel[tetri]++;
+	    while(chaine[i] != '\0')
+	      {
+		if(chaine[i] == carac)
+		  chaine[i] = '.';
+		i++;
+	      }
+	    chaine = backtrack(iactuel, chaine, tetri, carac,length, iactuel[tetri], tab);
+	 }
 	else
 	  {
-	    tetri--;
-	    carac--;
-	    chaine = ft_erase(chaine, carac);
-	    printf("carac actuel : %c  |",carac);
-	    iprec++;
-	    chaine = backtrack(0, chaine, tetri, carac,length,iprec, tab);
-	  }
+	    printf("augmente");
+	    chaine = malloc_chaine(chaine, ++length);
+	    length++;
+	    printf("%d", length);
+	    chaine = backtrack(chainei, chaine, 0, 'A',length,0, tab);
+	    }
 
-	  }
-  return (chaine);
+      }
+    return (chaine);
 }
 
 void ft_all(char *piece)
@@ -268,16 +277,16 @@ void ft_all(char *piece)
   int i;
   int j;
   int index;
-  int iprec;
+  int *iactuel;
   
 
-  iprec = 0;
+  iactuel = (int *)malloc(sizeof(int) * 10);
   tab = all_tetri(ft_strdup(piece));
   i = 0;
   j = 0;
   index = 0;
   carac = 'A';
-  length = 0;
+  length = 4;
   chaine = malloc_chaine(chaine, length);
   tetri = 0;
   reali = 0;
@@ -285,7 +294,7 @@ void ft_all(char *piece)
   zone_contact = 0;
   chainei = 0;
   length++;
-chaine = backtrack(iprec, chaine, tetri, carac, length, chainei, tab);
+chaine = backtrack(iactuel, chaine, tetri, carac, length, chainei, tab);
   printf("\n");
  printf("\033[31m%s", chaine);
   printf("\n");
