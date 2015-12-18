@@ -225,9 +225,10 @@ char *backtrack(int *iactuel, char *chaine, int tetri, char carac, int length, i
     if(try(chaine, ft_strdup(tab[tetri]), chainei, piecei,length))
     {
 	chaine = trans_di(chaine, carac);
+	iactuel[tetri] = chainei;
 	tetri++;
 	carac++;
-	iactuel[tetri] = chainei;
+	iactuel[tetri] = 0;
 	if(tetri  < 8)
 	  {
 	    chaine = backtrack(iactuel, chaine, tetri, carac,length,0, tab);   
@@ -286,7 +287,7 @@ void ft_all(char *piece)
   j = 0;
   index = 0;
   carac = 'A';
-  length = 0;
+  length = 2;
   chaine = malloc_chaine(chaine, length);
   tetri = 0;
   reali = 0;
